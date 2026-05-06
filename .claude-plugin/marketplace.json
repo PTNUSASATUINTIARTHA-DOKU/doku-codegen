@@ -16,7 +16,7 @@
   "plugins": [
     {
       "name": "doku-codegen",
-      "source": ".",
+      "source": "https://gitlab.doku.com/dev-team/doku-codegen",
       "description": "Generate DOKU API client code in any language — auto-detects tech stack, fetches live API specs from developers.doku.com, supports Java/Kotlin/Python/Node.js/Go/PHP",
       "version": "1.2.0",
       "tags": ["doku", "payment", "payment-gateway", "sdk", "code-generation", "virtual-account", "checkout", "qris", "snap", "fintech", "java", "spring-boot", "python", "nodejs", "golang"]
