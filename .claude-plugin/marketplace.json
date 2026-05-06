@@ -1,25 +1,29 @@
 {
   "name": "doku-codegen",
-  "description": "Generate DOKU API client code in any language — auto-detects tech stack and fetches live API specs from developers.doku.com",
-  "version": "1.2.0",
   "owner": {
     "name": "DOKU Engineering",
-    "url": "https://doku.com"
+    "email": "engineering@doku.com"
   },
-  "homepage": "https://developers.doku.com",
-  "license": "MIT",
-  "keywords": [
-    "doku", "payment", "payment-gateway", "sdk", "code-generation",
-    "virtual-account", "checkout", "qris", "snap", "fintech",
-    "java", "spring-boot", "python", "nodejs", "golang"
-  ],
+  "metadata": {
+    "description": "Generate DOKU API client code in any language — auto-detects tech stack and fetches live API specs from developers.doku.com",
+    "version": "1.2.0"
+  },
   "plugins": [
     {
       "name": "doku-codegen",
-      "source": "https://gitlab.doku.com/dev-team/doku-codegen",
       "description": "Generate DOKU API client code in any language — auto-detects tech stack, fetches live API specs from developers.doku.com, supports Java/Kotlin/Python/Node.js/Go/PHP",
-      "version": "1.2.0",
-      "tags": ["doku", "payment", "payment-gateway", "sdk", "code-generation", "virtual-account", "checkout", "qris", "snap", "fintech", "java", "spring-boot", "python", "nodejs", "golang"]
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/setup-project",
+        "./skills/fetch-api-spec",
+        "./skills/detect-stack",
+        "./skills/setup-credentials",
+        "./skills/mock-test",
+        "./skills/production-checklist",
+        "./skills/upgrade",
+        "./skills/generate-postman"
+      ]
     }
   ]
 }
