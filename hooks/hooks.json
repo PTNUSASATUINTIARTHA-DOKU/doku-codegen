@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"session-start\" \"scripts/hooks/session-start.js\" \"standard,strict\""
+          }
+        ],
+        "description": "Warn if doku-codegen is not configured in this project"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"pre-write-doku-config\" \"scripts/hooks/pre-write-doku-config.js\" \"standard,strict\""
+          }
+        ],
+        "description": "Block overwriting credentials file; warn on DOKU shared infrastructure files"
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"config-protection\" \"scripts/hooks/config-protection.js\" \"standard,strict\""
+          }
+        ],
+        "description": "Block weakening linter/formatter configs to silence quality warnings"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "async": true,
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"post-edit-accumulator\" \"scripts/hooks/post-edit-accumulator.js\" \"standard,strict\""
+          }
+        ],
+        "description": "Accumulate written/edited source files for batch validation at Stop"
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "async": true,
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"post-write-java-check\" \"scripts/hooks/post-write-java-check.js\" \"standard,strict\""
+          },
+          {
+            "type": "command",
+            "async": true,
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"post-write-kotlin-check\" \"scripts/hooks/post-write-kotlin-check.js\" \"standard,strict\""
+          },
+          {
+            "type": "command",
+            "async": true,
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"post-write-python-check\" \"scripts/hooks/post-write-python-check.js\" \"standard,strict\""
+          },
+          {
+            "type": "command",
+            "async": true,
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"post-write-node-check\" \"scripts/hooks/post-write-node-check.js\" \"standard,strict\""
+          },
+          {
+            "type": "command",
+            "async": true,
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"post-write-go-check\" \"scripts/hooks/post-write-go-check.js\" \"standard,strict\""
+          },
+          {
+            "type": "command",
+            "async": true,
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"post-write-php-check\" \"scripts/hooks/post-write-php-check.js\" \"standard,strict\""
+          }
+        ],
+        "description": "Check written source files for debug output, hardcoded credentials, and missing validation — per language"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "async": true,
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"stop-validate-generated\" \"scripts/hooks/stop-validate-generated.js\" \"standard,strict\""
+          }
+        ],
+        "description": "Batch cross-file validation at end of response — cred scan, pair check, interceptor presence"
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "async": true,
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"cost-tracker\" \"scripts/hooks/cost-tracker.js\" \"standard,strict\""
+          }
+        ],
+        "description": "Estimate and log token usage and USD cost for the session"
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"pre-compact\" \"scripts/hooks/pre-compact.js\" \"standard,strict\""
+          }
+        ],
+        "description": "Save generation state (API spec, language, files written) before context compaction"
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"user-prompt-submit\" \"scripts/hooks/user-prompt-submit.js\" \"standard,strict\""
+          }
+        ],
+        "description": "Remind user to use plugin skills when asking to generate DOKU payment code manually"
+      }
+    ]
+  }
+}
