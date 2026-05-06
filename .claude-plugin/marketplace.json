@@ -2,7 +2,7 @@
   "name": "doku-codegen",
   "description": "Generate DOKU API client code in any language — auto-detects tech stack and fetches live API specs from developers.doku.com",
   "version": "1.2.0",
-  "author": {
+  "owner": {
     "name": "DOKU Engineering",
     "url": "https://doku.com"
   },
