@@ -1,4 +1,5 @@
 ---
+name: resume-session
 description: Resume a previously saved DOKU generation session — picks up exactly where you left off
 ---
 

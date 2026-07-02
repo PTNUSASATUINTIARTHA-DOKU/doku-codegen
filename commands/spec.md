@@ -1,4 +1,5 @@
 ---
+name: spec
 description: Fetch and save a DOKU API spec from developers.doku.com. Use to load or refresh the spec before generating code.
 argument-hint: [payment-method]
 ---

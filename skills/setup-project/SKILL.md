@@ -13,7 +13,7 @@ This skill is a **pure orchestrator**. It gathers all prerequisites, confirms wi
 
 ## HARD RULES — Read Before Starting
 
-**NEVER skip the spec fetch.** Even if the user names a specific DOKU API ("checkout", "VA BNI", etc.) in their message, you DO NOT know the current API spec — your training data may be outdated. You MUST always fetch the live spec from `developers.doku.com` via `sitemap-pages.xml`. There are no exceptions.
+**NEVER skip the spec fetch.** Even if the user names a specific DOKU API ("checkout", "VA BNI", etc.) in their message, you DO NOT know the current API spec — your training data may be outdated. You MUST always fetch the live spec from `developers.doku.com`. The preferred discovery path is `llms.txt` (see `fetch-api-spec` skill Step 2); `sitemap-pages.xml` is a last-resort fallback. There are no exceptions to fetching.
 
 **NEVER generate a file list from training knowledge.** The file list in Step 4 must be derived entirely from the `API_SPEC` saved in config after the fetch. If `API_SPEC` is not in config, do not proceed to Step 2.
 
@@ -50,28 +50,46 @@ Print: `📄 No API spec found — fetching live spec from developers.doku.com..
 
 If the user's message already names the API (e.g. "checkout", "VA BNI", "QRIS"), use that as the keyword — you do not need to ask again. Otherwise ask which DOKU API (Checkout, Virtual Account, QRIS, Convenience Store, or Other).
 
-Fetch `https://developers.doku.com/sitemap-pages.xml` — this is the ONLY reliable way to find the correct page URL because the root is JS-rendered. Match URLs by keyword. Follow the matching URL to the endpoint detail page. Follow prerequisite cross-references (auth pages, SNAP token pages). Extract the full spec.
+**Fetch order (from the `fetch-api-spec` skill — do not deviate):**
+
+1. `https://developers.doku.com/llms.txt` — agent-native index. Keyword-match against USER_API_CHOICE.
+2. For any URL discovered above, fetch `<url>.md` for clean Markdown (no JS render needed).
+3. If (1) is unreachable, fall back to `https://developers.doku.com/sitemap-pages.xml` and repeat keyword matching.
+
+Follow the matching URL to the endpoint detail page. Follow prerequisite cross-references (auth pages, SNAP token pages) using the same `<url>.md` pattern. Extract the full spec.
 
 **Immediately write the spec to config before doing anything else.** Do not hold it in memory. Use the Write tool to save `.claude/doku-codegen.local.md` with the API_SPEC block now — before asking for credentials, before asking about mode, before generating any file list. This ensures the spec survives any interruption.
+
+Store the spec under `API_SPECS[<api-slug>]` and mirror it to the top-level `API_SPEC` for backward-compat (see `fetch-api-spec` skill for the full block shape). Minimal shape:
 
 ```
 ---
 LANGUAGE: (leave blank if not yet detected)
-API_SPEC:
-  API_NAME: <value>
-  API_ENDPOINT: <value>
-  BASE_URL:
-    sandbox: <value>
-    production: <value>
-  REQUIRED_HEADERS: <value>
-  REQUEST_SCHEMA: <value>
-  RESPONSE_SCHEMA: <value>
-  SIGNATURE_ALGORITHM: <value>
-  AUTH_NOTES: <value>
-SPEC_SOURCE_URL: <url fetched>
-SPEC_FETCHED_AT: <ISO timestamp>
+API_SPECS:
+  <api-slug>:
+    API_NAME: <value>
+    ENDPOINTS:
+      - method: <value>
+        path: <value>
+        name: <value>
+    API_ENDPOINT: <ENDPOINTS[0].method + " " + ENDPOINTS[0].path>
+    BASE_URL:
+      sandbox: <value>
+      production: <value>
+    REQUIRED_HEADERS: <value>
+    REQUEST_SCHEMA: <value>
+    RESPONSE_SCHEMA: <value>
+    SIGNATURE_ALGORITHM: <value>
+    SIGNATURE_TYPE: <SNAP | NON_SNAP>
+    TOKEN_ENDPOINT: <value or empty>
+    AUTH_NOTES: <value>
+    SPEC_SOURCE_URL: <url fetched>
+    SPEC_FETCHED_AT: <ISO timestamp>
+API_SPEC: <copy of API_SPECS[<active-slug>] for back-compat>
 ---
 ```
+
+**Select the active spec by requested api-slug.** If the user asked to generate a specific API (e.g. `virtual-account`), use `API_SPECS[virtual-account]` as `API_SPEC`. If only one slug is present, use it.
 
 Print: `✅ Spec saved to .claude/doku-codegen.local.md`
 
@@ -83,7 +101,7 @@ Print: `🔑 No credentials found — let's set them up...`
 Ask:
 1. "Enter your DOKU Client-Id (from DOKU Back Office):"
 2. "Enter your DOKU Secret Key:"
-3. Only if API_SPEC.SIGNATURE_TYPE = SNAP or AUTH_NOTES mentions "B2B token": "Enter path to your RSA private key PEM file:"
+3. Only if `API_SPEC.SIGNATURE_TYPE == SNAP` or `AUTH_NOTES` mentions "B2B token": "Enter path to your RSA private key PEM file:"
 
 Ask environment: Sandbox (Recommended) or Production. Save BASE_URL accordingly.
 

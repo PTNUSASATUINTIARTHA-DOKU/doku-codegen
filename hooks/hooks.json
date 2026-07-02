@@ -18,17 +18,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"pre-write-doku-config\" \"scripts/hooks/pre-write-doku-config.js\" \"standard,strict\""
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"pre-write-doku-config\" \"scripts/hooks/pre-write-doku-config.js\" \"minimal,standard,strict\""
           }
         ],
-        "description": "Block overwriting credentials file; warn on DOKU shared infrastructure files"
+        "description": "Block destructive overwrite of credentials file; warn on DOKU shared infrastructure files"
       },
       {
         "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"config-protection\" \"scripts/hooks/config-protection.js\" \"standard,strict\""
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags.js\" \"config-protection\" \"scripts/hooks/config-protection.js\" \"minimal,standard,strict\""
           }
         ],
         "description": "Block weakening linter/formatter configs to silence quality warnings"

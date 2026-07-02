@@ -1,4 +1,5 @@
 ---
+name: checklist
 description: Run production readiness checks on the DOKU integration. Verifies env vars, no hardcoded secrets, logging config, error handling.
 ---
 
