@@ -1,4 +1,5 @@
 ---
+name: save-session
 description: Save current DOKU generation session state so you can resume it later
 argument-hint: [optional: note about current state]
 ---

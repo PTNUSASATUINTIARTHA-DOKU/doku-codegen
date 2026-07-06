@@ -27,14 +27,18 @@ If `API_SPEC` is missing → stop:
 ❌ No API spec found. Run /doku-codegen:fetch-api-spec first.
 ```
 
-Extract:
-- `API_SPEC.API_NAME`
-- `API_SPEC.API_ENDPOINT` — method + path
-- `API_SPEC.REQUIRED_HEADERS`
-- `API_SPEC.REQUEST_SCHEMA`
-- `API_SPEC.SIGNATURE_ALGORITHM`
-- `API_SPEC.AUTH_NOTES`
-- `CLIENT_ID`, `SECRET_KEY`, `BASE_URL`
+**Select the active spec.** If the user named an API (e.g. "generate Postman for checkout") use that slug; otherwise if only one entry exists in `API_SPECS`, use it. Fall back to legacy top-level `API_SPEC` only when `API_SPECS` is absent. If `API_SPECS` has multiple entries and the user did not name one, ask which API before generating — do not silently pick the last-fetched.
+
+Extract from the selected spec (prefer `API_SPECS[<slug>].*`, fall back to `API_SPEC.*` for legacy configs):
+- `API_NAME`
+- `API_ENDPOINT` — method + path (or first entry of `ENDPOINTS`)
+- `REQUIRED_HEADERS`
+- `REQUEST_SCHEMA`
+- `SIGNATURE_ALGORITHM`
+- `TOKEN_ENDPOINT` (for SNAP APIs)
+- `AUTH_NOTES`
+
+Also load: `CLIENT_ID`, `SECRET_KEY`, `BASE_URL` from top-level config.
 
 Derive `API_SLUG` from API_NAME: lowercase, replace spaces with hyphens (e.g. "Checkout" → "checkout", "Virtual Account BRI" → "virtual-account-bri").
 
@@ -82,7 +86,8 @@ pm.environment.set("DOKU_SIGNATURE", "HMACSHA256=" + sig);
 // Step 1: Get B2B access token (chained pre-request)
 const clientId   = pm.environment.get("DOKU_CLIENT_ID");
 const privateKey = pm.environment.get("DOKU_PRIVATE_KEY");
-const tokenEndpoint = pm.environment.get("DOKU_BASE_URL") + "/snap/v1/access-token/b2b";
+// Prefer API_SPEC.TOKEN_ENDPOINT from config; fall back to canonical DOKU path.
+const tokenEndpoint = pm.environment.get("DOKU_BASE_URL") + (pm.environment.get("DOKU_TOKEN_ENDPOINT") || "/authorization/v1/access-token/b2b");
 
 // Compute RSA-SHA256 string-to-sign for token request
 const timestamp = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');

@@ -1,4 +1,5 @@
 ---
+name: test
 description: Send a test request to DOKU sandbox to verify signature and connectivity. Runs against the saved API spec.
 ---
 

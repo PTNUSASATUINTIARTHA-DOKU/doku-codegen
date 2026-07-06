@@ -1,4 +1,5 @@
 ---
+name: postman
 description: Generate a Postman collection for the integrated DOKU API with pre-request signature script.
 ---
 

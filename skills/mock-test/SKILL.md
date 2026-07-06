@@ -26,9 +26,16 @@ Extract from config:
 - `CLIENT_ID`
 - `SECRET_KEY`
 - `BASE_URL` (or derive from ENVIRONMENT)
-- `API_SPEC.API_ENDPOINT` — e.g. `POST /checkout/v1/payment`
-- `API_SPEC.REQUEST_SCHEMA` — to build minimal valid body
-- `API_SPEC.SIGNATURE_ALGORITHM`
+
+**Select the active spec.** If the user specified an API (e.g. "test checkout") use that slug; otherwise if only one entry exists in `API_SPECS`, use it. Fall back to the legacy top-level `API_SPEC` only when `API_SPECS` is absent.
+
+- Prefer: `API_SPECS[<slug>].API_ENDPOINT` — e.g. `POST /checkout/v1/payment`
+- Prefer: `API_SPECS[<slug>].ENDPOINTS[0]` if `API_ENDPOINT` is not set
+- Prefer: `API_SPECS[<slug>].REQUEST_SCHEMA` — to build minimal valid body
+- Prefer: `API_SPECS[<slug>].SIGNATURE_ALGORITHM`
+- Fallback (legacy configs only): `API_SPEC.API_ENDPOINT`, `API_SPEC.REQUEST_SCHEMA`, `API_SPEC.SIGNATURE_ALGORITHM`
+
+If `API_SPECS` has multiple entries and the user did not name one, ask which API to test before proceeding — do not silently pick the last-fetched.
 
 ---
 
@@ -50,9 +57,24 @@ Build minimal valid request body from `API_SPEC.REQUEST_SCHEMA` required fields,
 
 ## Step 3: Detect Running App or Test Directly
 
-Check if the app is running on port 8080 (or port from config):
+Derive `LOCAL_PORT` and `LOCAL_HEALTH_PATH` from `LANGUAGE` / `FRAMEWORK` in config:
+
+| Stack | Default port | Default health path |
+|---|---|---|
+| Java / Kotlin (Spring Boot) | 8080 | `/actuator/health` |
+| Python / FastAPI | 8000 | `/health` (or `/docs` as fallback if `/health` not defined) |
+| Python / Flask | 5000 | `/health` (or `/`) |
+| Python / Django | 8000 | `/` |
+| Node.js / Express | 3000 | `/health` (or `/`) |
+| Node.js / NestJS | 3000 | `/health` |
+| Go / Gin | 8080 | `/health` |
+| PHP / Laravel | 8000 | `/` |
+
+If the config stores a custom port under `LOCAL_PORT`, prefer that over the table default.
+
+Check if the app is running:
 ```bash
-curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health 2>/dev/null || echo "NOT_RUNNING"
+curl -s -o /dev/null -w "%{http_code}" http://localhost:[LOCAL_PORT][LOCAL_HEALTH_PATH] 2>/dev/null || echo "NOT_RUNNING"
 ```
 
 **If app is running → call through local app:**
