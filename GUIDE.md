@@ -30,7 +30,7 @@ Supported stacks: **Java** (Spring Boot), **Kotlin** (Spring Boot), **Python** (
 3. Under **Repositories**, click the `+` icon.
 4. Paste:
    ```
-   https://github.com/tricerafi-doku/doku-cursor-codegen-plugin
+   https://github.com/PTNUSASATUINTIARTHA-DOKU/doku-codegen
    ```
 5. Under **Customize → Plugins**, search `doku` and click **Add** on **DOKU Codegen**.
 6. Fully quit Cursor (`Cmd+Q`) and reopen. Plugins load at launch.
@@ -38,7 +38,7 @@ Supported stacks: **Java** (Spring Boot), **Kotlin** (Spring Boot), **Python** (
 ### Local install (for editing the plugin itself)
 
 ```bash
-git clone https://github.com/tricerafi-doku/doku-cursor-codegen-plugin.git
+git clone https://github.com/PTNUSASATUINTIARTHA-DOKU/doku-codegen.git
 cd doku-cursor-codegen-plugin
 mkdir -p ~/.cursor/plugins/local
 cp -R plugins/doku-codegen ~/.cursor/plugins/local/doku-codegen
@@ -263,6 +263,6 @@ Restart Cursor.
 
 ## 6. Getting help
 
-- **Plugin bugs** (wrong signature, missing dependency, hook false positive): open an issue at https://github.com/tricerafi-doku/doku-cursor-codegen-plugin/issues with the generated file and the standards section it violates.
+- **Plugin bugs** (wrong signature, missing dependency, hook false positive): open an issue at https://github.com/PTNUSASATUINTIARTHA-DOKU/doku-codegen/issues with the generated file and the standards section it violates.
 - **DOKU API questions**: email `technology@doku.com`. The plugin follows whatever the live spec on `developers.doku.com` says.
 - **Cursor install questions**: consult Cursor's own docs at https://cursor.com/docs/plugins.
