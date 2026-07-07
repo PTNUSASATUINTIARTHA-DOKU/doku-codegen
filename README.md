@@ -12,7 +12,7 @@ In Cursor:
 2. Under **Repositories**, click the `+` icon.
 3. Paste the marketplace repo URL:
    ```
-   https://github.com/tricerafi-doku/doku-cursor-codegen-plugin
+   https://github.com/PTNUSASATUINTIARTHA-DOKU/doku-codegen
    ```
 4. Search `doku` in Customize → Plugins and click **Add** on **DOKU Codegen**.
 
@@ -95,7 +95,7 @@ Credentials and API spec are stored in `.claude/doku-codegen.local.md` at your p
 For editing the plugin locally:
 
 ```bash
-git clone https://github.com/tricerafi-doku/doku-cursor-codegen-plugin.git
+git clone https://github.com/PTNUSASATUINTIARTHA-DOKU/doku-codegen.git
 cd doku-cursor-codegen-plugin
 mkdir -p ~/.cursor/plugins/local
 cp -R plugins/doku-codegen ~/.cursor/plugins/local/doku-codegen
